@@ -1,0 +1,112 @@
++<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Shoe Store | Home</title>
+  <style>
+    :root {
+      --primary: #007bff;
+      --primary-hover: #0056b3;
+      --bg: #f4f7f6;
+      --text: #333;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 500px;
+      width: 90%;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 
+        0 10px 25px rgba(0,0,0,0.05),
+        0 20px 48px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .wrap:hover {
+      transform: translateY(-5px);
+    }
+    .icon-box {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 40px;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: 28px;
+      font-weight: 800;
+      color: #1a1a1a;
+    }
+
+    p {
+      margin: 0 0 30px;
+      color: #666;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    .btn {
+      display: block;
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      padding: 16px 24px;
+      border-radius: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+      transform: scale(1.02);
+    }
+
+    .hint {
+      margin-top: 24px;
+      color: #aaa;
+      font-size: 13px;
+      border-top: 1px solid #eee;
+      padding-top: 16px;
+    }
+
+    .hint code {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="icon-box">👟</div>
+    <h1>Welcpme to Shoe Store</h1>
+    <p>Discover the perfect sneakers. Explore our collection and place your order in just a few clicks.</p>
+    <a class="btn" href="catalog.html">go to catolog</a>
+    <div class="hint"><code>http://localhost:3000</code></div>
+  </div>
+</body>
+</html>

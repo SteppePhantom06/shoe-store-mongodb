@@ -1,0 +1,124 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Catalog - Shoe Store</title>
+    <style>
+      body{font-family:sans-serif;background:#eee;margin:0;padding:14px}
+      .wrap{max-width:980px;margin:0 auto;background:#fff;border-radius:10px;padding:14px;box-shadow:0 0 10px rgba(0,0,0,.08)}
+      h1{margin:0 0 10px;font-size:22px}
+      .list{display:flex;flex-direction:column;gap:10px}
+      .card{display:grid;grid-template-columns:84px 1fr auto;gap:12px;align-items:center;border:1px solid #eee;border-radius:10px;padding:10px;background:#fafafa}
+      .img{width:84px;height:84px;border-radius:10px;object-fit:cover;border:1px solid #e9e9e9;background:#fff}
+      .title{font-size:15px;font-weight:800;margin:0 0 4px}
+      .meta{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+      .tag{font-size:12px;padding:3px 8px;border-radius:999px;background:#fff;border:1px solid #e7e7e7;color:#444}
+      .desc{margin:6px 0 0;color:#666;font-size:12px;line-height:1.25}
+      .right{text-align:right}
+      .price{font-weight:900;font-size:15px;margin-bottom:8px}
+      button{border:0;border-radius:9px;padding:8px 10px;cursor:pointer;background:#007bff;color:#fff;font-weight:700}
+      button:hover{background:#0056b3}
+      .sizes{margin-top:6px;color:#666;font-size:12px}
+      .back-link {display:inline-block; margin-bottom:15px; text-decoration:none; color:#007bff; font-weight:700;}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <a href="index.html" class="back-link">← Back to Home</a>
+      
+      <h1>Product List</h1>
+      <div id="catalog" class="list">Loading products...</div>
+    </div>
+
+    <script>
+      const API = "/api/products";
+      const PH = "https://via.placeholder.com/120?text=Shoe";
+
+      function imgUrl(p){
+    const val = p.image || p.imageUrl || p.img;
+    if(!val) return PH;
+    if(String(val).startsWith("http")) return val;    
+    if(String(val).startsWith("/")) return val;       
+    return "/images/" + val;                           
+  }
+
+
+      function oneLine(v){
+        if(!v) return "";
+        const s = String(v).trim();
+        return s.length > 80 ? s.slice(0, 80) + "..." : s;
+      }
+
+      function sizesInfo(p){
+        if(!Array.isArray(p.variants) || p.variants.length === 0) return "Sizes: -";
+        const top = p.variants.slice(0, 3).map(v => `${v.size}:${v.stock}`).join(" | ");
+        const more = p.variants.length > 3 ? ` +${p.variants.length-3}` : "";
+        return `Sizes(stock): ${top}${more}`;
+      }
+
+      async function load(){
+        try{
+          const res = await fetch(API);
+          const data = await res.json();
+
+          if (data.length === 0) {
+            document.getElementById('catalog').innerHTML = "No products found.";
+            return;
+          }
+
+          document.getElementById('catalog').innerHTML = data.map(p => {
+            const tags = [
+              p.category && `Category: ${p.category}`,
+              p.gender && `Gender: ${p.gender}`,
+              p.country && `Origin: ${p.country}`
+            ].filter(Boolean);
+
+            return `
+              <div class="card">
+                <img class="img" src="${imgUrl(p)}" onerror="this.src='${PH}'" />
+                <div>
+                  <div class="title">${p.brand || ''} ${p.model || ''}</div>
+                  <div class="meta">
+                    ${tags.map(t => `<span class="tag">${t}</span>`).join("") || `<span class="tag">Standard Edition</span>`}
+                  </div>
+                  <div class="desc">${oneLine(p.description) || ""}</div>
+                  <div class="sizes">${sizesInfo(p)}</div>
+                </div>
+                <div class="right">
+                  <div class="price">$${p.base_price ?? 0}</div>
+                  <button onclick="buy('${p._id}')">Buy Now</button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } catch(e){
+          document.getElementById('catalog').innerHTML = "<p style='color:red'>Error: Server is offline or API not found. Make sure your Node.js server is running at http://localhost:3000</p>";
+        }
+      }
+
+      async function buy(id){
+        const ok = confirm("Do you want to place an order for this item?");
+        if(!ok) return;
+
+        try {
+          const res = await fetch(`http://localhost:3000/api/products/reduce-stock`, {
+            method: 'PUT',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ productId: id, size: 42 })
+          });
+
+          if(res.ok){
+            alert("Order successful!");
+            load();
+          } else {
+            alert("Error updating stock.");
+          }
+        } catch (err) {
+          alert("Connection error.");
+        }
+      }
+      load();
+    </script>
+  </body>
+  </html>
